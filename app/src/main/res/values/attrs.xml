@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="good" format="boolean"/>
+    <attr name="good1" format="boolean"/>
+    <attr name="good2" formar="boolean"/>
+</resources>

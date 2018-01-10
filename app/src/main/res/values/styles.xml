@@ -1,0 +1,32 @@
+<resources>
+
+
+
+
+    <!-- Base application theme. -->
+    <style name="AppTheme2" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+       <item name="good">true</item>
+       <item name="good1">true</item>
+       <item name="good2">true</item>
+    </style>
+
+    <style name="AppTheme1" parent="Theme.AppCompat.Light.NoActionBar">
+
+    </style>
+    
+    <style name="ToolBarTitle" parent="Base.TextAppearance.AppCompat.Widget.ActionMode.Title">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+    
+    <style name="OverflowMenuStyle" parent="Widget.AppCompat.PopupMenu.Overflow">
+    </style>
+
+    <style name="ToolbarPopupTheme" parent="@style/ThemeOverlay.AppCompat.Dark">
+        //popupWindow的背景色
+        <item name="android:colorBackground">#000000</item>
+        //popoupWindow所在的位置
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
+    </style>
+</resources>

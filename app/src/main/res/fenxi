@@ -1,0 +1,12 @@
+需求分析：指示器，实现与viewPager之间的交互，能够自定义指示器的样式，动画效果等等。当然
+          需要提供默认的样式、动画效果等等。
+          代码层面的配置要简单，不要复杂，具备可读性
+
+viewPager与indicator之间是一种组合关系
+indicator <>-------->viewPager
+
+具体功能：1：标签的内容取自于viewPager中设置的标签
+          2：indicator中的标签大小的计算方法:当linearLayout中子view的个数大于4的时候，
+                                             textView大小取4/1屏幕的宽度。
+          3：textView下方的条块采用自定义view的方式来实现。通过drawable_bottom进行配置。
+

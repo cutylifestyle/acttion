@@ -1,0 +1,47 @@
+
+BackStackRecord2
+ArrayList<Op> mOps = new ArrayList<>()---->Op:op.cmd = OP_HIDE;
+                                              op.fragment = fragment1;
+                                            RemoveOp:removeOp.cmd = OP_REMOVE
+                                              removeOp.fragment = fragment1;
+                                           Op:op.cmd = OP_ADD
+                                              op.fragment = fragment2
+
+-----------------------------------------------------
+
+FragmentManager
+------------------------------
+mStateSaved = false
+mExecutingActions = false
+mCurState = Fragment.RESUMED
+ArrayList<OpGenerator> mPendingActions
+ArrayList<BackStackRecord> mTmpRecords  持有了BackStackRecord2
+ArrayList<Boolean> mTmpIsPop            false
+ArrayList<Fragment> mTmpAddedFragments
+ArrayList<Fragment> mAdded              持有了fragment2
+mNextFragmentIndex = 2
+SparseArray<Fragment> mActive           在下标为0的地方持有了Fragment1
+                                        在下标位1的地方持有了fragment2
+
+Fragment1                                                       Fragment2
+------------------------------------------------------------------------
+mFragmentManager = mManager                         mFragmentManager = mManager
+mContainerId = containerViewId                      mContainerId = containerViewId
+mFragmentId = containerViewId                       mFragmentId = containerViewId
+mIndex = 0                                          mIndex = 1
+mAdded = false                                       mAdded = true
+mRemoving = true                                   mRemoving = false
+                                                    mHiddenChanged = false
+mHiddenChanged = true
+mState = CREATED
+mHost = mHost
+mFragmentManager = FragmentManagerImpI
+mCalled = true
+mRetaining = false
+mView = 布局
+mInnerView = 布局
+mIsNewlyAdded = false
+mHidden = true
+
+---------------------------ViewCompat.setSaveFromParentEnabled(f.mView, false);
+ ---------------------------f.restoreViewState(f.mSavedFragmentState);
