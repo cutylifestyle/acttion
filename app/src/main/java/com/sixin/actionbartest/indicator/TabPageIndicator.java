@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -79,12 +80,12 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
     }
 
     @Override
     public void onPageSelected(int position) {
         changeCurrentItem(position);
+        scrollToTab(position);
     }
 
     @Override
@@ -127,6 +128,13 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
 //        tabView.setEllipsize(TextUtils.TruncateAt.END);
         tabView.setSingleLine(true);
         tabView.setText(mViewPager.getAdapter().getPageTitle(i));
+
+        tabView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mViewPager.setCurrentItem(i,true);
+            }
+        });
     }
 
 
@@ -163,4 +171,12 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
             }
         }
     }
+
+    private void scrollToTab(int position) {
+        LinearLayout childView = (LinearLayout) getChildAt(0);
+        View tabView = childView.getChildAt(position);
+        int scrollPos = tabView.getLeft() - (getWidth() - tabView.getWidth())/2;
+        smoothScrollTo(scrollPos,0);
+    }
+
 }

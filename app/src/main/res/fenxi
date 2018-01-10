@@ -9,4 +9,17 @@ indicator <>-------->viewPager
           2：indicator中的标签大小的计算方法:当linearLayout中子view的个数大于4的时候，
                                              textView大小取4/1屏幕的宽度。
           3：textView下方的条块采用自定义view的方式来实现。通过drawable_bottom进行配置。
+          4: 6个  180   1080
+
+          滑动720   0
+          滑动到1440  滑动了90
+          滑动到2160  滑动了180
+          滑动到2880  滑动了90
+          滑动到720*5 滑动了0
+
+
+
+
+
+
 
