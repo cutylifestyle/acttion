@@ -19,6 +19,7 @@ import com.sixin.actionbartest.DisplayUtil;
 
 public class TabPageIndicator extends HorizontalScrollView implements PageIndicator {
 
+    private static final String TAG = TabPageIndicator.class.getName();
     private ViewPager mViewPager;
 
     private static final float DEFAULT_TEXT_SIZE = 16.0f;
@@ -57,6 +58,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         if(mViewPager != viewPager){
             mViewPager = viewPager;
         }
+        mViewPager.addOnPageChangeListener(this);
         addTabViews();
     }
 
@@ -67,11 +69,6 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
 
     @Override
     public void setCurrentItem(int item) {
-
-    }
-
-    @Override
-    public void setOnPageChangeListener(@NonNull ViewPager.OnPageChangeListener listener) {
 
     }
 
@@ -87,7 +84,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
 
     @Override
     public void onPageSelected(int position) {
-
+        changeCurrentItem(position);
     }
 
     @Override
@@ -114,7 +111,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
 
         int viewPagerChildCount = mViewPager.getAdapter().getCount();
         for(int i = 0 ; i < viewPagerChildCount ; i++){
-            TextView tabView = new TextView(getContext());
+            TabView tabView = new TabView(getContext());
             initTabView(tabView, i);
             childView.addView(tabView,i);
         }
@@ -150,6 +147,19 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
                 tabView.setLayoutParams(new LinearLayout.LayoutParams(
                         mTabViewWidth,
                         LayoutParams.WRAP_CONTENT));
+            }
+        }
+    }
+
+    private void changeCurrentItem(int position) {
+        LinearLayout childView = (LinearLayout) getChildAt(0);
+        int tabViewCount = childView.getChildCount();
+        for(int i = 0 ; i < tabViewCount ; i++){
+            TabView tabView = (TabView) childView.getChildAt(i);
+            if(i == position){
+                tabView.switchBottomDrawable(true);
+            }else{
+                tabView.switchBottomDrawable(false);
             }
         }
     }

@@ -30,12 +30,6 @@ public interface PageIndicator extends ViewPager.OnPageChangeListener{
     void setCurrentItem(int item);
 
     /**
-     * 设置viewPager的监听
-     * @param listener {@link ViewPager.OnPageChangeListener}
-     * */
-    void setOnPageChangeListener(@NonNull ViewPager.OnPageChangeListener listener);
-
-    /**
      * 当ViewPager的数据发生变化，更新标签
      * */
     void notifyDataSetChanged();
