@@ -2,9 +2,9 @@ package com.sixin.actionbartest.indicator;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -19,7 +19,7 @@ import com.sixin.actionbartest.DisplayUtil;
  */
 
 public class TabPageIndicator extends HorizontalScrollView implements PageIndicator {
-
+    // TODO: 2018/1/11 修改linearLayout的宽高  移动卡顿的问题
     private static final String TAG = TabPageIndicator.class.getName();
     private ViewPager mViewPager;
 
@@ -30,21 +30,28 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
     private final int mTabViewWidth = mScreenWidth / 4;
 
     public TabPageIndicator(Context context) {
-        super(context);
-        config();
-        initChildView(context);
+        this(context, null);
     }
 
     public TabPageIndicator(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        config();
-        initChildView(context);
+        this(context, attrs, 0);
     }
 
     public TabPageIndicator(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        config();
+        setHorizontalScrollBarEnabled(false);
         initChildView(context);
+    }
+
+    // TODO: 2018/1/11 view中的post方法的作用  removeCallBacks()方法
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
     }
 
     @Override
@@ -53,10 +60,19 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
-    // TODO: 2018/1/10 这个方法需要修改 ，可能存在漏洞
     @Override
     public void setViewPager(@NonNull ViewPager viewPager) {
-        if(mViewPager != viewPager){
+        final PagerAdapter pagerAdapter = viewPager.getAdapter();
+        if(pagerAdapter == null){
+           throw new IllegalStateException("ViewPager does not have adapter instance.");
+        }
+        if(mViewPager == viewPager){
+            return;
+        }
+        if(mViewPager == null){
+            mViewPager = viewPager;
+        }else{
+            mViewPager.addOnPageChangeListener(null);
             mViewPager = viewPager;
         }
         mViewPager.addOnPageChangeListener(this);
@@ -64,18 +80,13 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
     }
 
     @Override
-    public void setViewPager(@NonNull ViewPager viewPager, int initialPosition) {
-
-    }
-
-    @Override
-    public void setCurrentItem(int item) {
-
-    }
-
-    @Override
     public void notifyDataSetChanged() {
-
+        //scrollView的子view：linearLayout
+        LinearLayout childView = (LinearLayout) getChildAt(0);
+        childView.removeAllViews();
+        addTabViews();
+        // TODO: 2018/1/11 requestLayout的作用 有没有必要写
+        requestLayout();
     }
 
     @Override
@@ -93,13 +104,8 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
 
     }
 
-    private void config(){
-        setHorizontalScrollBarEnabled(false);
-        setVerticalScrollBarEnabled(false);
-    }
-
     private void initChildView(Context context) {
-        LinearLayout childView = new LinearLayout(context);
+        TabLayout childView = new TabLayout(context);
         childView.setLayoutParams(new FrameLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT));
@@ -108,7 +114,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
 
     private void addTabViews(){
         //scrollView的子view：linearLayout
-        LinearLayout childView = (LinearLayout) getChildAt(0);
+        TabLayout childView = (TabLayout) getChildAt(0);
 
         int viewPagerChildCount = mViewPager.getAdapter().getCount();
         for(int i = 0 ; i < viewPagerChildCount ; i++){
@@ -127,6 +133,10 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         tabView.setTextSize(DEFAULT_TEXT_SIZE);
 //        tabView.setEllipsize(TextUtils.TruncateAt.END);
         tabView.setSingleLine(true);
+        String title = (String) mViewPager.getAdapter().getPageTitle(i);
+        if(title == null || "".equals(title)){
+            throw new IllegalArgumentException("ViewPager must have title");
+        }
         tabView.setText(mViewPager.getAdapter().getPageTitle(i));
 
         tabView.setOnClickListener(new OnClickListener() {
@@ -140,7 +150,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
 
     private void resetTabViewLayoutParams() {
         //scrollView的子view：linearLayout
-        LinearLayout childView = (LinearLayout) getChildAt(0);
+        TabLayout childView = (TabLayout) getChildAt(0);
         int tabViewCount = childView.getChildCount();
         if(tabViewCount < CRITICAL_VALUE){
             for(int i = 0 ; i < tabViewCount ; i++){
@@ -160,7 +170,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
     }
 
     private void changeCurrentItem(int position) {
-        LinearLayout childView = (LinearLayout) getChildAt(0);
+        TabLayout childView = (TabLayout) getChildAt(0);
         int tabViewCount = childView.getChildCount();
         for(int i = 0 ; i < tabViewCount ; i++){
             TabView tabView = (TabView) childView.getChildAt(i);
@@ -173,7 +183,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
     }
 
     private void scrollToTab(int position) {
-        LinearLayout childView = (LinearLayout) getChildAt(0);
+        TabLayout childView = (TabLayout) getChildAt(0);
         View tabView = childView.getChildAt(position);
         int scrollPos = tabView.getLeft() - (getWidth() - tabView.getWidth())/2;
         smoothScrollTo(scrollPos,0);
