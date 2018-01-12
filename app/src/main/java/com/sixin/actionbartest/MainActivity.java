@@ -7,6 +7,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.sixin.actionbartest.indicator.TabPageIndicator;
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
 //                Manifest.permission.READ_EXTERNAL_STORAGE,
 //                Manifest.permission.WRITE_EXTERNAL_STORAGE,
 //                Manifest.permission.READ_CALENDAR);
+        Log.d(TAG, "onCreate");
         data = new ArrayList<>();
         for(int i = 0 ; i < 10 ; i++){
             data.add("第" + i + "个");
@@ -50,28 +53,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        Log.d(TAG, "onStart");
     }
 
-
-
-    @PermissionsGranted
-    private void doSomething() {
-        Toast.makeText(this, "000000", Toast.LENGTH_SHORT).show();
-    }
-
-    @PermissionsDenied
-    private void doSomething1(List<String> permissions){
-        Toast.makeText(this, "222222...."+permissions.size(), Toast.LENGTH_SHORT).show();
-    }
-
-    @PermissionsNoNeeded
-    private void doSomething2(){
-        Toast.makeText(this, "333333", Toast.LENGTH_SHORT).show();
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume");
     }
 
    class MyAdapter extends FragmentStatePagerAdapter{
@@ -98,10 +87,4 @@ public class MainActivity extends AppCompatActivity {
 
    }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        PermissionsUtil.onRequestPermissionsResult(this,requestCode,
-                permissions,grantResults);
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
 }
