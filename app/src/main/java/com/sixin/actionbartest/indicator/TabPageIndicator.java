@@ -19,12 +19,16 @@ import com.sixin.actionbartest.DisplayUtil;
  */
 
 public class TabPageIndicator extends HorizontalScrollView implements PageIndicator {
-    // TODO: 2018/1/11 修改linearLayout的宽高  移动卡顿的问题
+    // TODO: 2018/1/12 requestLayout在什么地方写
+    // TODO: 2018/1/12 requestLayout源码分析
+    // TODO: 2018/1/12  在这个视图都渲染成功后，我们的操作是如何实现的。比如setText()里面
+    // TODO: 2018/1/12 发生了什么
     private static final String TAG = TabPageIndicator.class.getName();
     private ViewPager mViewPager;
 
     private static final float DEFAULT_TEXT_SIZE = 16.0f;
     private static final int CRITICAL_VALUE = 4;
+    private static final int MINIMUM_HEIGHT = 50;
 
     private final int mScreenWidth = DisplayUtil.getDisplayWidth(getContext());
     private final int mTabViewWidth = mScreenWidth / 4;
@@ -40,6 +44,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
     public TabPageIndicator(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setHorizontalScrollBarEnabled(false);
+        setMinimumHeight(MINIMUM_HEIGHT);
         initChildView(context);
     }
 
@@ -76,9 +81,10 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
             mViewPager = viewPager;
         }
         mViewPager.addOnPageChangeListener(this);
-        addTabViews();
+        notifyDataSetChanged();
     }
 
+    // TODO: 2018/1/12 这个方法开放存在的问题  存在明显的bug
     @Override
     public void notifyDataSetChanged() {
         //scrollView的子view：linearLayout
