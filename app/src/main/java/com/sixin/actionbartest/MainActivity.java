@@ -1,50 +1,75 @@
 package com.sixin.actionbartest;
 
+import android.Manifest;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import com.sixin.actionbartest.indicator.TabPageIndicator;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.upstream.BandwidthMeter;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 import com.sixin.actionbartest.permissionsutil.PermissionsDenied;
 import com.sixin.actionbartest.permissionsutil.PermissionsGranted;
 import com.sixin.actionbartest.permissionsutil.PermissionsNoNeeded;
 import com.sixin.actionbartest.permissionsutil.PermissionsUtil;
 
-import java.util.ArrayList;
+import java.io.File;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     // TODO: 2017/12/25    返回栈源码分析  commit 与commitAllow...()源码分析
     // TODO: 2017/12/29    activity.onPause()  onStop()源码分析
     // TODO: 2017/12/29  碎片中onCreateOptions() 源码分析
-    private static final String TAG = MainActivity.class.getName();
-    private ViewPager viewPager;
-    private ArrayList<String> data ;
-    private TabPageIndicator indicator;
 
+    private SimpleExoPlayer player;
+
+    private static final String TAG = MainActivity.class.getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        PermissionsUtil.requestPermissions(this,
-//                100,
-//                Manifest.permission.READ_EXTERNAL_STORAGE,
-//                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//                Manifest.permission.READ_CALENDAR);
-        data = new ArrayList<>();
-        for(int i = 0 ; i < 10 ; i++){
-            data.add("第" + i + "个");
-        }
-        indicator = (TabPageIndicator) findViewById(R.id.indicator);
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
-        viewPager.setAdapter(new MyAdapter(getSupportFragmentManager()));
-        indicator.setViewPager(viewPager);
+
+        PermissionsUtil.requestPermissions(this,100,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+
+    }
+
+    private void init() {
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath()+ File.separator+"m.mp3";
+        File file = new File(path);
+
+        RamberPlayerView playerView = (RamberPlayerView) findViewById(R.id.playerView);
+
+
+        Handler handler = new Handler();
+        BandwidthMeter meter = new DefaultBandwidthMeter();
+        TrackSelection.Factory factory = new AdaptiveTrackSelection.Factory(meter);
+        TrackSelector trackSelector = new DefaultTrackSelector(factory);
+        player = ExoPlayerFactory.newSimpleInstance(this, trackSelector);
+        playerView.setPlayer(player);
+
+        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this,
+                Util.getUserAgent(this,"actionbartest"));
+        player.setPlayWhenReady(true);
+        MediaSource source = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.fromFile(file));
+        player.prepare(source);
     }
 
     @Override
@@ -56,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
     @PermissionsGranted
     private void doSomething() {
-        Toast.makeText(this, "000000", Toast.LENGTH_SHORT).show();
+        init();
     }
 
     @PermissionsDenied
@@ -66,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
     @PermissionsNoNeeded
     private void doSomething2(){
-        Toast.makeText(this, "333333", Toast.LENGTH_SHORT).show();
+        init();
     }
 
     @Override
@@ -74,29 +99,11 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
     }
 
-   class MyAdapter extends FragmentStatePagerAdapter{
-
-       public MyAdapter(FragmentManager fm) {
-           super(fm);
-       }
-
-       @Override
-       public Fragment getItem(int position) {
-           return BlankFragment.newInstance();
-       }
-
-       @Override
-       public int getCount() {
-           return data.size();
-       }
-
-       @Override
-       public CharSequence getPageTitle(int position) {
-           return data.get(position);
-       }
-
-
-   }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        player.release();
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

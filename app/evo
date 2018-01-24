@@ -1,0 +1,7 @@
+setControllerHideOnTouch 防止触摸控制器的时候，隐藏
+
+setResizeMode 设置图片的大小
+
+player_layout_id
+
+controller_layout_id

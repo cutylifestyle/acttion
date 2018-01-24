@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:id="@+id/linearLayout1"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal">
 
-   <com.sixin.actionbartest.indicator.TabPageIndicator
-       android:id="@+id/indicator"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"/>
+  <!--<com.google.android.exoplayer2.ui.SimpleExoPlayerView
+      android:id="@+id/playerView"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      app:player_layout_id="@layout/surface_player"
+      app:controller_layout_id="@layout/surface_play_controller"
+      app:show_shuffle_button="true"
+      app:hide_on_touch="false"
+      app:show_timeout="-1"
+      app:repeat_toggle_modes="all"/>-->
 
-   <android.support.v4.view.ViewPager
-       android:id="@+id/viewPager"
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"/>
+  <com.sixin.actionbartest.RamberPlayerView
+      android:id="@+id/playerView"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      app:player_layout_id="@layout/surface_player"
+      app:controller_layout_id="@layout/surface_play_controller"
+      app:show_shuffle_button="true"
+      app:hide_on_touch="false"
+      app:show_timeout="-1"
+      app:repeat_toggle_modes="all|one|none"/>
 
 </LinearLayout>
