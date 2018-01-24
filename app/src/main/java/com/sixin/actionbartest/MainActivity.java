@@ -5,8 +5,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         PermissionsUtil.requestPermissions(this,100,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -70,12 +71,21 @@ public class MainActivity extends AppCompatActivity {
         player.setPlayWhenReady(true);
         MediaSource source = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.fromFile(file));
         player.prepare(source);
+
+//        PermissionsUtil.requestPermissions(this,
+//                100,
+//                Manifest.permission.READ_EXTERNAL_STORAGE,
+//                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//                Manifest.permission.READ_CALENDAR);
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        Log.d(TAG, "onStart");
     }
+
 
 
 
@@ -94,9 +104,11 @@ public class MainActivity extends AppCompatActivity {
         init();
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume");
     }
 
     @Override
@@ -105,10 +117,4 @@ public class MainActivity extends AppCompatActivity {
         player.release();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        PermissionsUtil.onRequestPermissionsResult(this,requestCode,
-                permissions,grantResults);
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
 }
