@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -19,10 +20,7 @@ import com.sixin.actionbartest.DisplayUtil;
  */
 
 public class TabPageIndicator extends HorizontalScrollView implements PageIndicator {
-    // TODO: 2018/1/12 requestLayout在什么地方写
-    // TODO: 2018/1/12 requestLayout源码分析
-    // TODO: 2018/1/12  在这个视图都渲染成功后，我们的操作是如何实现的。比如setText()里面
-    // TODO: 2018/1/12 发生了什么
+    // TODO: 2018/1/13 requestLayout 方法会触发draw方法吗？
     private static final String TAG = TabPageIndicator.class.getName();
     private ViewPager mViewPager;
 
@@ -61,8 +59,15 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        Log.d(TAG, "onMeasure");
         resetTabViewLayoutParams();
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        Log.d(TAG, "onLayout");
     }
 
     @Override
@@ -92,6 +97,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         childView.removeAllViews();
         addTabViews();
         // TODO: 2018/1/11 requestLayout的作用 有没有必要写
+        Log.d(TAG, "requestLayout");
         requestLayout();
     }
 
